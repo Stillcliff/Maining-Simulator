@@ -81,6 +81,7 @@ class FirstScr(Screen):
 
 Clicks = 0
 Maining = 0
+PerClicks = 1
 class SecondScr(Screen):
     def __init__(self, name='second'):
         global Clicks, Maining
@@ -103,7 +104,9 @@ class SecondScr(Screen):
             
         bl.add_widget(self.txt2)
 
-        
+        self.total_buy = Label(text = "Куплено улучшений" + str(PerClicks -1))
+
+        bl.add_widget(self.total_buy)
         s_1 = Button(text = "Назад",
                     font_size = 12,
                     background_color = [.777,0,0,1],
@@ -155,17 +158,23 @@ class GameScr(Screen):
                     background_normal = "")
 
         s__2.on_press = self.next
-
+        buy_button = Button(text = "Купить ускоритель",
+                    font_size = 15,
+                    background_color = [.941,0.239,0.8,1],
+                    background_normal = "")
+        buy_button.on_press = self.buy
+        bl.add_widget(buy_button)
         bl.add_widget(s__2)
         
+
         #btn1.on_press = self.next
         #self.add_widget(btn1)
         al.add_widget(bl)
         self.add_widget(al)
 
     def r(self):
-        global Maining, Clicks
-        Maining += randint(0,10)
+        global Maining, Clicks , PerClicks
+        Maining += PerClicks 
         Clicks += 1
         self.txt1.text =  "Заработано:" + str(Maining)
         app.scr2.txt1.text =  "Всего кликов:" + str(Clicks)
@@ -174,8 +183,16 @@ class GameScr(Screen):
     def next(self):
         self.manager.transition.direction = 'up'
         self.manager.current = 'first'
-
-
+    
+    def buy(self):
+        global PerClicks , Maining
+        if Maining >= 15 :
+            PerClicks += 1
+            Maining -= 15
+            app.scr2.total_buy.text =  "Куплено улучшений:" + str(PerClicks)
+            self.txt1.text =  "Cписано 15, Осталось:" + str(Maining)
+        else :
+            self.txt1.text =  "Cначала накопи 15:"
 class MyApp(App):
     def build(self):
         sm = ScreenManager()
